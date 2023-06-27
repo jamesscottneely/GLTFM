@@ -29,13 +29,15 @@ Note: There is always one fewer inter-event times than earthquakes.
 
 ```z0_flag```: Flag for the initial strain $Z_0$ (in years) after the first earthquake in the paleoseismic record. Either set a value (e.g. ```10```) to fix it or set to ```Free``` to have it estimated via maximum likelihood.
 
-```R_flag```: Flag for the strain drop $R$ (in years) after an earthquake in the paleoseismic record. This flag can be set to a specific value (e.g. ```150```), estimated via maximum likelihood by setting to ```Free```, or estimated using tectonic information. To estimate R using
+```R_flag```: Flag for the strain drop $R$ (in years) after an earthquake in the paleoseismic record. This flag can be set to a specific value (e.g. ```150```), estimated via maximum likelihood by setting to ```Free```, or estimated using tectonic information. To estimate R using tectonic information--using the Wells and Coppersmith 1994 equation, you must include the estimated earthquake magnitude, fault geometry (SS, NO, R, All) and slip accumulation rate (in mm/yr). The input should be within brackets and look like ```[7.8 SS 50]```. Future implementations will allow for variable values for $R$.
 
-```incOpenInt```:
+```incOpenInt```: This is a Y or N flag to indicate whether the quiescent period after the most recent earthquake should be included in the maximum likelihood estimation. Usually set to Y as the open interval can provide additional information.
 
-```model```:
+```model```: This is the base probability to use for GLTFM. The model name must correspond to one of the 2-parameter continuous probability models in ```scipy.stats```. As discussed in the manuscript we prefer using the Weibull model which in ```scipy.stats``` is ```weibull_min```.
 
-```iterFit```:
+```iterFit```: This is a Y or N flag to indicate whether the free parameters should be iteratively solved for (as described in Neely et al. *submitted*) or if they should be solved for all at once.
 
-```params```:
+```params```: This list is for the shape and scale parameters of GLTFM's underlying probability distribution. Either a specific value should be specified or set to ```Free``` to estimate via maximum likelihood. For example ```[Free Free]``` or ```[2.0 Free]```. See ```scipy.stats``` for a description of the shape and scale parameters for the different probability distributions.
+
+
 
