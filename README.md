@@ -23,13 +23,13 @@ Note: There is always one fewer inter-event times than earthquakes.
 
 ```priorEQ```: The year when the most recent earthquake in the paleoseismic record occured. 
 
-```T_Forecast```: Window of time (in years) of interest for earthquake probability forecasts.
+```T_Forecast```: Window of time (in years) of interest for earthquake probability forecasts. For example, the probability of an earthquake in the next 30 years.
 
-```yrsForecast```:
+```yrsForecast```: Number of years after the most recent earthquake to calculate the probabilities.
 
-```z0_flag```:
+```z0_flag```: Flag for the initial strain $Z_0$ (in years) after the first earthquake in the paleoseismic record. Either set a value (e.g. ```10```) to fix it or set to ```Free``` to have it estimated via maximum likelihood.
 
-```R_flag```:
+```R_flag```: Flag for the strain drop $R$ (in years) after an earthquake in the paleoseismic record. This flag can be set to a specific value (e.g. ```150```), estimated via maximum likelihood by setting to ```Free```, or estimated using tectonic information. To estimate R using
 
 ```incOpenInt```:
 
