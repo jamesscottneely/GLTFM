@@ -19,11 +19,11 @@ Note: There is always one fewer inter-event times than earthquakes.
 
 *ParamFile.txt*: [Required] This file contains the input parameters needed to run GLTFM. This file contains 10 input parameters:
 
-```currentYr```: The current year (YYYY) of interest for the probability calculations. 
+```currentYr```: The current year of interest for the probability calculations. 
 
-```priorEQ```: The year (YYYY) when the most recent earthquake in the paleoseismic record occured. 
+```priorEQ```: The year when the most recent earthquake in the paleoseismic record occured. 
 
-```T_Forecast```:
+```T_Forecast```: Window of time (in years) of interest for earthquake probability forecasts.
 
 ```yrsForecast```:
 
