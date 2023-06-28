@@ -1,0 +1,2 @@
+currentYr,priorEQ,T_Forecast,yrsForecast,z0_flag,R_flag,incOpenInt,model,iterFit,params
+2023,1857,30,400,Free,[7.9 SS 35],Y,weibull_min,Y,[Free Free]
