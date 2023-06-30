@@ -63,7 +63,7 @@ def plotHaz(axd,z_out,eqtimes,eq_inter,R_out,P0_out,P1_out,paramDic,q_period):
 	axd.vlines(eqtimes[0],Haz_hist[0,0],maxHaz[0],color=style_dic['color']) # Plot first earthquake
 	axd.vlines(eqtimes[1:],Haz_hist[1:,0],maxHaz,color=style_dic['color']) # Plot rest of earthquakes
 
-	ptext = "Base Model: " + plot_styles(paramDic['model'])['name'] + " "+r"Shape: {:.1f} ".format(P0_out) + r"Scale: {:.1f}".format(P1_out) + "\n" + "Mean: {:.0f}, SD: {:.0f}, CV: {:.1f} ".format(np.mean(eq_inter),np.std(eq_inter),np.std(eq_inter)/np.mean(eq_inter)) 
+	ptext = "Base Model: " + plot_styles(paramDic['model'])['name'] + " "+r"Shape: {:.1f} ".format(P0_out) + r"Scale: {:.1f}".format(P1_out) + "\n" + "Paleoseismic Record Mean: {:.0f}, SD: {:.0f}, CV: {:.1f} ".format(np.mean(eq_inter),np.std(eq_inter),np.std(eq_inter)/np.mean(eq_inter)) 
 	axd.text(.5,.9,ptext,va='top',ha='center',color='black',transform=axd.transAxes) #include resdiual text
 
 	axd.set_xlabel('Year')
