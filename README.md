@@ -15,13 +15,13 @@ Note: There is always one fewer inter-event times than earthquakes.
 
 *ParamFile.txt*: [Required] This file contains the input parameters needed to run GLTFM. This file contains 10 input parameters:
 
-```currentYr```: The current year of interest for the probability calculations. 
+```currentYr```: The current year of interest for the probability calculation. For instance 2023. 
 
 ```priorEQ```: The year when the most recent earthquake in the paleoseismic record occured. 
 
 ```T_Forecast```: Window of time (in years) of interest for earthquake probability forecasts. For example, the probability of an earthquake in the next 30 years.
 
-```yrsForecast```: Number of years after the most recent earthquake to calculate the probabilities.
+```yrsForecast```: Number of years after the most recent earthquake to calculate the probabilities. For instance, calculate probabilities for 400 years of the current quiescent period.
 
 ```z0_flag```: Flag for the initial strain $Z_0$ (in years) after the first earthquake in the paleoseismic record. Either set a value (e.g. ```10```) to fix it or set to ```Free``` to have it estimated via maximum likelihood.
 
