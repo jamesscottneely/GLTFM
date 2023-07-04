@@ -7,12 +7,13 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 import matplotlib.transforms as transforms
 import pandas as pd
+import sys
 
 ############################  USER DEFINED INPUTS
-dataPath='ENTER PATH' # Enter path to directory that contains input records
-include_uncertainty = 'N' # Set flag to Y or N if you want to include uncertainties
-seed_val= 128231839 # Define a seed value for random number generator. Only needed if include_uncertainty = 'Y'
-num_sims = 10 # Enter the number of simulations for uncertainty analysis. Only needed if include_uncertainty = 'Y'
+dataPath='ENTER PATH HERE' # Enter path to directory that contains input records
+include_uncertainty = True # Set Boolean (True or False) if you want to include uncertainties
+seed_val= 128231839 # Define a seed value for random number generator. Only used if include_uncertainty = TRUE
+num_sims = 10 # Enter the number of simulations for uncertainty analysis. Only used if include_uncertainty = TRUE
 ############################  
 
 
@@ -60,16 +61,16 @@ for k in renewal_mod:
 	
 
 #### Save data to files
-np.savetxt(dataPath+'R_out.txt',R_out,fmt='%.4f') # Save R values to file. One for each earthquake
-np.savetxt(dataPath+'z_out.txt',z_out,fmt='%.4f') # Save Z (residual strain) values to file. One for each earthquake
+np.savetxt(dataPath+'/R_out.txt',R_out,fmt='%.4f') # Save R values to file. One for each earthquake
+np.savetxt(dataPath+'/z_out.txt',z_out,fmt='%.4f') # Save Z (residual strain) values to file. One for each earthquake
 pdf_param_out = [['GLTFM',P0_out,P1_out,loglikeGLTFM,GLTFM_Tforecast_today]]+ [[k,renewal_mod[k]['bestParams'][0],renewal_mod[k]['bestParams'][2],renewal_mod[k]['loglike'],renewal_mod[k]['TForecast_Today']] for k in renewal_mod] # List of parameter values
-pd.DataFrame(pdf_param_out,columns=['Model','Shape','Scale','Loglikelihood',"{:.0f}yrsForecast".format(paramDic['T_Forecast'])]).to_csv(dataPath+'model_out.txt',index=False) # Save best parameters for each model 
+pd.DataFrame(pdf_param_out,columns=['Model','Shape','Scale','Loglikelihood',"{:.0f}yrsForecast".format(paramDic['T_Forecast'])]).to_csv(dataPath+'/model_out.txt',index=False) # Save best parameters for each model 
 pdf_vals_out = [GLTFM_PDF]+ [renewal_mod[k]['PDF'] for k in renewal_mod] # List of PDFs
-pd.DataFrame(pdf_vals_out).transpose().to_csv(dataPath+'PDF_out.txt',index=False,header=['GLTFM']+[k for k in renewal_mod]) # Save PDF for each model 
+pd.DataFrame(pdf_vals_out).transpose().to_csv(dataPath+'/PDF_out.txt',index=False,header=['GLTFM']+[k for k in renewal_mod]) # Save PDF for each model 
 cdf_vals_out = [GLTFM_CDF]+ [renewal_mod[k]['CDF'] for k in renewal_mod] # List of CDFs
-pd.DataFrame(cdf_vals_out).transpose().to_csv(dataPath+'CDF_out.txt',index=False,header=['GLTFM']+[k for k in renewal_mod]) # Save CDF for each model 
+pd.DataFrame(cdf_vals_out).transpose().to_csv(dataPath+'/CDF_out.txt',index=False,header=['GLTFM']+[k for k in renewal_mod]) # Save CDF for each model 
 Tfore_vals_out = [GLTFM_Tforecast]+ [renewal_mod[k]['T_Forecast'] for k in renewal_mod] # List of T_forecasts
-pd.DataFrame(Tfore_vals_out).transpose().to_csv(dataPath+"{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast']),index=False,header=['GLTFM']+[k for k in renewal_mod]) # Save T_forecast for each model 
+pd.DataFrame(Tfore_vals_out).transpose().to_csv(dataPath+"/{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast']),index=False,header=['GLTFM']+[k for k in renewal_mod]) # Save T_forecast for each model 
 
 
 ### Create a plot of GLTFM's hazard rate history (including residual strain), plot PDFs and the T-year forecasts
@@ -135,13 +136,13 @@ axd['C'].text(lx,ly,'(C)',ha='center',va='bottom',transform=axd['C'].transAxes)
 axd['C'].axvline(q_period,color='grey',ls='--')
 axd['B'].legend(title=r'Model ($\mu\pm\sigma$,LL)')
 axd['C'].legend(title='Model (Pr. Today)')
-plotFile = dataPath + 'GLTFM_fitted.pdf'
+plotFile = dataPath + '/GLTFM_fitted.pdf'
 plt.tight_layout()
 plt.savefig(plotFile)
 plt.close()
 
-if include_uncertainty == 'N': # Stop here if uncertainty analysis unwanted
-	exit()
+if not include_uncertainty: # Stop here if uncertainty analysis unwanted
+	sys.exit()
 
 ###### ###### ###### ###### ###### ###### ###### ###### ###### 
 ###### Uncertainty testing
@@ -154,20 +155,20 @@ rng = np.random.default_rng(seed=seed_val) # Set the seed value for the random n
 param_array,PDF_array,TForecast_array,TForecast_Today_array = GLTFM.GLTFM_uncertainty(num_sims,paramDic,P0_out,P1_out,R_out,eq_inter,q_period,sub_len,rng) #### Estimate GLTFM uncertainty
 
 #### Save GLTFM Uncertainty data
-np.savetxt(dataPath+'GLTFM_UncertaintyParams_out.txt',param_array,header='R z0 Shape Scale',comments='',fmt='%.8f') # Save R,Z0,Shape and Scale parameters
-np.savetxt(dataPath+'GLTFM_UncertaintyPDF_out.txt',PDF_array,fmt='%.8f') # Save simulated PDFs
-np.savetxt(dataPath+"GLTFM_Uncertainty{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast']),TForecast_array,fmt='%.8f') # Save simulated PDFs
-np.savetxt(dataPath+"GLTFM_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast']),TForecast_Today_array,fmt='%.8f') # Save simulated PDFs
+np.savetxt(dataPath+'/GLTFM_UncertaintyParams_out.txt',param_array,header='R z0 Shape Scale',comments='',fmt='%.8f') # Save R,Z0,Shape and Scale parameters
+np.savetxt(dataPath+'/GLTFM_UncertaintyPDF_out.txt',PDF_array,fmt='%.8f') # Save simulated PDFs
+np.savetxt(dataPath+"/GLTFM_Uncertainty{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast']),TForecast_array,fmt='%.8f') # Save simulated PDFs
+np.savetxt(dataPath+"/GLTFM_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast']),TForecast_Today_array,fmt='%.8f') # Save simulated PDFs
 
 
 ## Estimate renewal model uncertainty and save data
 for k in renewal_mod:
 	# Renewal models
 	param_array_Renewal,PDF_array_Renewal,TForecast_array_Renewal,TForecast_Today_array_Renewal = GLTFM.Renewal_uncertainty(num_sims,paramDic,renewal_mod[k]['bestParams'],renewal_mod[k]['name'],q_period,sub_len,rng)
-	np.savetxt(dataPath+k+'_UncertaintyParams_out.txt',param_array_Renewal,header='Shape Loc Scale',comments='',fmt='%.8f') # Save Shape and Scale parameters
-	np.savetxt(dataPath+k+'_UncertaintyPDF_out.txt',PDF_array_Renewal,fmt='%.8f') # Save simulated PDFs
-	np.savetxt(dataPath+k+"_Uncertainty{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast']),TForecast_array_Renewal,fmt='%.8f') # Save simulated PDFs
-	np.savetxt(dataPath+k+"_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast']),TForecast_Today_array_Renewal,fmt='%.8f') # Save simulated PDFs
+	np.savetxt(dataPath+'/'+k+'_UncertaintyParams_out.txt',param_array_Renewal,header='Shape Loc Scale',comments='',fmt='%.8f') # Save Shape and Scale parameters
+	np.savetxt(dataPath+'/'+k+'_UncertaintyPDF_out.txt',PDF_array_Renewal,fmt='%.8f') # Save simulated PDFs
+	np.savetxt(dataPath+'/'+k+"_Uncertainty{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast']),TForecast_array_Renewal,fmt='%.8f') # Save simulated PDFs
+	np.savetxt(dataPath+'/'+k+"_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast']),TForecast_Today_array_Renewal,fmt='%.8f') # Save simulated PDFs
 
 
 ######### Generate Figures to show uncertainty in forecasts. The following plotting codes
@@ -183,7 +184,7 @@ A
 """)
 ### Plot renewal models
 for k in renewal_mod:
-	filename = dataPath+k+"_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast'])
+	filename = dataPath+'/'+k+"_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast'])
 	data = np.loadtxt(filename) # load data
 	style_dic = GLTFM.plot_styles(renewal_mod[k]['name'])
 	density = stats.gaussian_kde(data)
@@ -191,7 +192,7 @@ for k in renewal_mod:
 	axd['A'].plot(xs,density(xs),color=style_dic['color'],label = k,ls=style_dic['ls'])
 	
 ### Plot GLTFM model
-filename = dataPath+"GLTFM_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast'])
+filename = dataPath+"/GLTFM_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast'])
 data = np.loadtxt(filename)
 style_dic = GLTFM.plot_styles('GLTFM')
 density = stats.gaussian_kde(data)
@@ -207,7 +208,7 @@ axd['A'].legend()
 
 
 ### save kernel density plot
-plotFile = dataPath+"Uncertainty{:.0f}yrsForecastToday_KDE.pdf".format(paramDic['T_Forecast'])
+plotFile = dataPath+"/Uncertainty{:.0f}yrsForecastToday_KDE.pdf".format(paramDic['T_Forecast'])
 plt.tight_layout()
 plt.savefig(plotFile)
 plt.close()
@@ -222,7 +223,7 @@ CD
 ax_l = ['A','B','C','D']
 idx = 0
 for k in renewal_mod:
-	filename = dataPath+k+"_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast'])
+	filename = dataPath+'/'+k+"_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast'])
 	data = np.loadtxt(filename)
 	style_dic = GLTFM.plot_styles(renewal_mod[k]['name'])
 	axd[ax_l[idx]].hist(data,bins=100,range=(0,1),color=style_dic['color'])
@@ -232,7 +233,7 @@ for k in renewal_mod:
 	axd[ax_l[idx]].set_xlabel('Estimated ' + "{:.0f}".format(paramDic['T_Forecast']) + '-Year Forecast')
 
 	idx +=1 
-filename = dataPath+"GLTFM_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast'])
+filename = dataPath+"/GLTFM_Uncertainty{:.0f}yrsForecastToday_out.txt".format(paramDic['T_Forecast'])
 data = np.loadtxt(filename)
 style_dic = GLTFM.plot_styles('GLTFM')
 axd[ax_l[idx]].hist(data,bins=100,range=(0,1),color=style_dic['color'])
@@ -247,7 +248,7 @@ axd['B'].text(lx,ly,'(B)',ha='center',va='bottom',transform=axd['B'].transAxes)
 axd['C'].text(lx,ly,'(C)',ha='center',va='bottom',transform=axd['C'].transAxes)
 axd['D'].text(lx,ly,'(D)',ha='center',va='bottom',transform=axd['D'].transAxes)
 ### Save histograms
-plotFile = dataPath+"Uncertainty{:.0f}yrsForecastToday_Histograms.pdf".format(paramDic['T_Forecast'])
+plotFile = dataPath+"/Uncertainty{:.0f}yrsForecastToday_Histograms.pdf".format(paramDic['T_Forecast'])
 plt.tight_layout()
 plt.savefig(plotFile)
 plt.close()
@@ -256,13 +257,13 @@ plt.close()
 #### PLot Uncertainty of current PDFs, N-year forecasts, and PDF paramater uncertainties
 for k in renewal_mod:
 	### Read in parameters
-	paramfile = dataPath+k+"_UncertaintyParams_out.txt"
+	paramfile = dataPath+'/'+k+"_UncertaintyParams_out.txt"
 	dataParam = pd.read_csv(paramfile,header=0,sep=" ")
 	#### Read in PDFs
-	PDFfile = dataPath+k+"_UncertaintyPDF_out.txt"
+	PDFfile = dataPath+'/'+k+"_UncertaintyPDF_out.txt"
 	dataPDF = np.loadtxt(PDFfile)	
 	#### Read in N-years forecast
-	filename = dataPath+k+"_Uncertainty{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast'])
+	filename = dataPath+'/'+k+"_Uncertainty{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast'])
 	data =  np.loadtxt(filename)
 	#### Create Plots
 	axd = plt.figure(figsize=(8,8)).subplot_mosaic(
@@ -309,20 +310,20 @@ for k in renewal_mod:
 	axd['D'].set_ylabel('Number of Simulations')
 
 	### Save Uncertainty plots
-	plotFile = dataPath+k+"_Uncertainty_Plots.pdf"
+	plotFile = dataPath+'/'+k+"_Uncertainty_Plots.pdf"
 	plt.tight_layout()
 	plt.savefig(plotFile)
 	plt.close()
 
 ### Plot the GLTFM Forecast and parameter uncertainties
  ### Read in parameters
-paramfile = dataPath+"GLTFM_UncertaintyParams_out.txt"
+paramfile = dataPath+"/GLTFM_UncertaintyParams_out.txt"
 dataParam = pd.read_csv(paramfile,header=0,sep=" ")
 #### Read in PDFs
-PDFfile = dataPath+"GLTFM_UncertaintyPDF_out.txt"
+PDFfile = dataPath+"/GLTFM_UncertaintyPDF_out.txt"
 dataPDF = np.loadtxt(PDFfile)	
 #### Read in N-years forecast
-filename = dataPath+"GLTFM_Uncertainty{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast'])
+filename = dataPath+"/GLTFM_Uncertainty{:.0f}yrsForecast_out.txt".format(paramDic['T_Forecast'])
 data =  np.loadtxt(filename)
 #### Create Plots
 axd = plt.figure(figsize=(8,12)).subplot_mosaic(
@@ -372,7 +373,7 @@ axd['F'].set_ylabel('Number of Simulations')
 
 
 ### Save Uncertainty plots
-plotFile = dataPath+"GLTFM_Uncertainty_Plots.pdf"
+plotFile = dataPath+"/GLTFM_Uncertainty_Plots.pdf"
 plt.tight_layout()
 plt.savefig(plotFile)
 plt.close()
