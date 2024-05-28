@@ -94,7 +94,7 @@ for k in renewal_mod:
 style_dic = GLTFM.plot_styles('GLTFM')
 label_data = "({:.0f}".format(rv_GLTFM.mean()) + r"$\pm$" + "{:.0f}".format(rv_GLTFM.std()) + ", {:.1f})".format(loglikeGLTFM)
 labelstr = 'GLTFM' +" " +label_data #
-axd['B'].plot(xVals,renewal_mod[k]['PDF'],color=style_dic['color'],label=labelstr,lw=1,ls=style_dic['ls'])
+axd['B'].plot(xVals,GLTFM_PDF,color=style_dic['color'],label=labelstr,lw=1,ls=style_dic['ls'])
 
 label_data = "({:.2f})".format(GLTFM_Tforecast_today)
 labelstr = 'GLTFM' +" " +label_data 
